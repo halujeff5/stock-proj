@@ -82,7 +82,7 @@ export default function SPX() {
                 width: 1,
             },
             title: {
-                text: symbol ? `${symbol} prices for today` : 'not stock selected',
+                text: symbol ? `${symbol} prices for today` : 'no stock selected',
                 align: 'center'
             }
         }
@@ -92,7 +92,7 @@ export default function SPX() {
              <h4 className='mt-4 text-[#014d4e]'>S&P 500</h4>
             <Chart options={options} series={series} type="line" width={400} height={200} />
             <div className='mt-4 text-[#014d4e]'>
-                <h4>Current Price: {currentPrice.y} </h4>
+                <h4>Index Level: {currentPrice.y} </h4>
                
             </div>
         </div>

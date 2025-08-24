@@ -92,7 +92,7 @@ export default function NASDAQ() {
              <h4 className='mt-4 text-[#014d4e]'>NASDAQ</h4>
             <Chart options={options} series={series} type="line" width={400} height={200} />
             <div className='mt-4 text-[#014d4e]'>
-                <h4>Current Price: {currentPrice.y} </h4>
+                <h4>Index Level: {currentPrice.y} </h4>
                
             </div>
         </div>

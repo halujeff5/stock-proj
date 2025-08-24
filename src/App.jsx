@@ -3,6 +3,7 @@ import React from 'react'
 import './App.css'
 import './myCSS.css'
 import Chart from 'react-apexcharts';
+import { SpinningCircles } from 'react-loading-icons';
 import StockInput from './StockInput';
 import DJIA from './DJIA';
 import NASDAQ from './NASDAQ';
@@ -51,7 +52,9 @@ export default function App() {
     //receiving data from socket
     socket.addEventListener('message', (event) => {
       const data = JSON.parse(event.data)
-      console.log('socket is open')
+      if (data) {
+        setLoading(false)
+      }
       console.log('HERE', data.data[0])
       if (data.type === 'trade' && data.data) {
         const trade = data.data[0];
@@ -118,11 +121,12 @@ export default function App() {
     }
   }
 
+  if (loading == false) {
   return (
 
     <div className="bg-[#e3f1be] w-full min-h-screen m-0">
 
-      <h1 className="text-[#014d4e] text-3xl font-bold m-0 py-6">🚀 Welcome to Stock Dashboard</h1>
+      <h1 className="text-[#014d4e] text-4xl font-bold m-6">🚀 Welcome to Stock Dashboard</h1>
       
       <div className='inline-flex'>
       <DJIA /> 
@@ -132,11 +136,12 @@ export default function App() {
       </div>
       <div className='w-full max-w-4xl bg-white rounded-2xl shadow-md mb-6'>
       <h4 className='mt-4 text-[#014d4e]'>Stock: {symbol}</h4>
-        <Chart options={options} series={series} type="line" width={1600} height={290} />
+      <Table name = {symbol} series = {series.data}/> 
+        <Chart options={options} series={series} type="candlestick" width={1600} height={270} />
         <div className='mt-4 text-[#014d4e]'>
           <h4>Current Price: {currentPrice.y} </h4>
         </div>
-        <Table series = {series}/> 
+      
       </div>
       <div className="inline w-full max-w-md bg-white rounded-2xl shadow-md p-6">
         <StockInput onDataReceived={handleChildData} />
@@ -145,5 +150,16 @@ export default function App() {
 
     </div>
 
+  )
+}
+return (
+  <>
+  
+    <div className='bg-[#014d4e] w-full m-0 opacity-85 h-screen inline items-center justify-center inline-flex text-4xl text-white'>
+    <SpinningCircles stroke = '#98ff98' strokeOpacity={.5} speed={.75} />
+  Loading Dashboard...
+    </div>
+       
+        </>
   )
 }
