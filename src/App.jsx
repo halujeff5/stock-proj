@@ -6,6 +6,7 @@ import Chart from 'react-apexcharts';
 import { SpinningCircles } from 'react-loading-icons';
 import StockInput from './StockInput';
 import Table from './Table';
+import DJIA from './DJIA';
 
 const apiKey = import.meta.env.VITE_APIKEY;
 
@@ -27,11 +28,9 @@ export default function App() {
 
   // prop passed from child component
   const handleChildData = (data) => {
-    if(data) {
-      setLoading(true)
-    }
     console.log('Data Received', data);
     setSymbol(data.toUpperCase());
+    setLoading(true)
     console.log(symbol)
   }
   //some defined hours of operation
@@ -46,7 +45,7 @@ export default function App() {
     // opening websocket
     const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
     socket.addEventListener('open', function (event) {
-      
+   
       socket.send(JSON.stringify({ 'type': 'subscribe', symbol: symbol }))
     });
     //receiving data from socket
@@ -71,35 +70,35 @@ export default function App() {
             //copying and extending data series to last 20 points
             data: [...prev[0].data.slice(-12), point]
           }
-        ])
-        if (series[0].length < 5) {
-          setLoading(true)
-        } if (series[0].length >= 5) {
-          setLoading(false)
-        }
+        ]
+        )
+        setLoading(false)
+
       } else {setError('Symbol not found.')} 
 
     }
     ;
     //closing socket
     return () => {
+      
       console.log(`Unsubscribing from ${symbol}`);
       socket.send(JSON.stringify({ type: 'unsubscribe', symbol : symbol }));
       socket.close();
+      
     };
   }, [symbol]);
 
   console.log(series)
   
+ 
   //another graph requirement specifying the options of graph such as type, speed of updates, curve 
   const options = {
     chart: {
       id: 'realtime',
       animations: {
         enabled: true,
-        easing: 'linear',
         dynamicAnimation: {
-          speed: 300,
+          speed: 350,
         },
         toolbar: { show: false },
         zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
@@ -109,7 +108,7 @@ export default function App() {
         min: marketOpen.getTime(),
         max: marketClose.getTime(),
         style: {
-          fontsize: '8px',
+          fontsize: '10px',
         }
       },
       yaxis: {
@@ -125,6 +124,8 @@ export default function App() {
       }
     }
   }
+
+
 
   if (loading==false){
   return (

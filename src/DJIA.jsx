@@ -61,7 +61,7 @@ export default function DJIA() {
                 enabled: true,
                 easing: 'linear',
                 dynamicAnimation: {
-                    speed: 300,
+                    speed: 350,
                 },
                 toolbar: { show: false },
                 zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
@@ -88,9 +88,9 @@ export default function DJIA() {
         }
     }
     return (
-        <div className='w-full max-w-4xl bg-white rounded-2xl shadow-md mb-6'>
+        <div className='bg-white rounded-2xl shadow-md mb-6'>
              <h4 className='mt-4 text-[#014d4e]'>DJIA</h4>
-            <Chart options={options} series={series} type="line" width={400} height={200} />
+            <Chart options={options} series={series} type="line" width={600} height={250} />
             <div className='text-[#014d4e]'>
                 <h4>Index Level: {currentPrice.y} </h4>
                
