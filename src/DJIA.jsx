@@ -10,7 +10,7 @@ const apiKey = import.meta.env.VITE_APIKEY;
 export default function DJIA() {
     const [loading, setLoading] = useState(false);
     const [currentPrice, setCurrentPrice] = useState({});
-    const [symbol, setSymbol] = useState('DJIA')
+    const [symbol, setSymbol] = useState('^DJI')
     const [series, setSeries] = useState([{
         name: 'DJIA',
         data: []
@@ -24,12 +24,12 @@ export default function DJIA() {
 
     const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
     socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify({ 'type': 'subscribe', symbol }))
+        socket.send(JSON.stringify({ 'type': 'subscribe', symbol: symbol }))
     });
 
-    socket.addEventListener('message', (event) => {
+    socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
-        console.log('socket is open')
+        console.log('socket is open', event)
         console.log('HERE', data.data[0])
         if (data.type === 'trade' && data.data) {
             const trade = data.data[0];
@@ -42,12 +42,12 @@ export default function DJIA() {
             setSeries((prev) => [
                 {
                     ...prev[0],
-                    name: 'DJIA',
-                    data: [...prev[0].data.slice(-20), point]
+                    name: '^DJI',
+                    data: [...prev[0].data.slice(-5), point]
                 }
             ])
         }
-    });
+    };
 
     // return () => {
     //     console.log(`Unsubscribing from ${symbol}`);

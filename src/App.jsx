@@ -5,10 +5,6 @@ import './myCSS.css'
 import Chart from 'react-apexcharts';
 import { SpinningCircles } from 'react-loading-icons';
 import StockInput from './StockInput';
-import DJIA from './DJIA';
-import NASDAQ from './NASDAQ';
-import SPX from './SPX';
-import RUSSELL from './RUSSELL';
 import Table from './Table';
 
 const apiKey = import.meta.env.VITE_APIKEY;
@@ -22,18 +18,21 @@ export default function App() {
   //error state in case symbol is invalid
   const [error, setError] = useState('')
   //price of stock
-  const [currentPrice, setCurrentPrice] = useState({});
+  const [currentPrice, setCurrentPrice] = useState([]);
   //required for APexCharts in this format
   const [series, setSeries] = useState([{
-    name: '',
+    name: symbol,
     data: []
   }]);
 
-  // passed from child component
+  // prop passed from child component
   const handleChildData = (data) => {
+    if(data) {
+      setLoading(true)
+    }
     console.log('Data Received', data);
     setSymbol(data.toUpperCase());
-    setSeries([{ name: data.toUpperCase(), data: [] }]);
+    console.log(symbol)
   }
   //some defined hours of operation
   const marketOpen = new Date();
@@ -47,14 +46,12 @@ export default function App() {
     // opening websocket
     const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
     socket.addEventListener('open', function (event) {
-      socket.send(JSON.stringify({ 'type': 'subscribe', symbol }))
+      
+      socket.send(JSON.stringify({ 'type': 'subscribe', symbol: symbol }))
     });
     //receiving data from socket
-    socket.addEventListener('message', (event) => {
+    socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      if (data) {
-        setLoading(false)
-      }
       console.log('HERE', data.data[0])
       if (data.type === 'trade' && data.data) {
         const trade = data.data[0];
@@ -72,20 +69,28 @@ export default function App() {
             ...prev[0],
             name: symbol,
             //copying and extending data series to last 20 points
-            data: [...prev[0].data.slice(-20), point]
+            data: [...prev[0].data.slice(-12), point]
           }
         ])
+        if (series[0].length < 5) {
+          setLoading(true)
+        } if (series[0].length >= 5) {
+          setLoading(false)
+        }
       } else {setError('Symbol not found.')} 
+
     }
-    );
+    ;
     //closing socket
     return () => {
       console.log(`Unsubscribing from ${symbol}`);
-      socket.send(JSON.stringify({ type: 'unsubscribe', symbol }));
+      socket.send(JSON.stringify({ type: 'unsubscribe', symbol : symbol }));
       socket.close();
     };
   }, [symbol]);
 
+  console.log(series)
+  
   //another graph requirement specifying the options of graph such as type, speed of updates, curve 
   const options = {
     chart: {
@@ -121,23 +126,18 @@ export default function App() {
     }
   }
 
-  if (loading == false) {
+  if (loading==false){
   return (
 
-    <div className="bg-[#e3f1be] w-full min-h-screen m-0">
+    <div className="bg-[#e3f1be] w-full min-h-screen m-0 z-0">
 
+   
       <h1 className="text-[#014d4e] text-4xl font-bold m-6">🚀 Welcome to Stock Dashboard</h1>
-      
-      <div className='inline-flex'>
-      <DJIA /> 
-      <NASDAQ />
-      <SPX />
-      <RUSSELL />
-      </div>
+
       <div className='w-full max-w-4xl bg-white rounded-2xl shadow-md mb-6'>
       <h4 className='mt-4 text-[#014d4e]'>Stock: {symbol}</h4>
-      <Table name = {symbol} series = {series.data}/> 
-        <Chart options={options} series={series} type="candlestick" width={1600} height={270} />
+       <Table name = {symbol} series = {series}/>  
+        <Chart options={options} series={series} type="line" width={1600} height={400} /> 
         <div className='mt-4 text-[#014d4e]'>
           <h4>Current Price: {currentPrice.y} </h4>
         </div>
@@ -147,19 +147,22 @@ export default function App() {
         <StockInput onDataReceived={handleChildData} />
         <h4 className='mt-4 text-[#014d4e]'>{error}</h4>
       </div>
-
-    </div>
-
+      </div>
   )
-}
-return (
-  <>
-  
-    <div className='bg-[#014d4e] w-full m-0 opacity-85 h-screen inline items-center justify-center inline-flex text-4xl text-white'>
-    <SpinningCircles stroke = '#98ff98' strokeOpacity={.5} speed={.75} />
-  Loading Dashboard...
+    }
+  if (loading==true) {
+  return (
+    <div className="bg-[#e3f1be] w-full min-h-screen m-0">
+
+      <div className='h-screen flex items-center justify-center'>
+    <SpinningCircles height='100' width ='100' stroke='#98ff98' strokeOpacity={.75} speed={.75} strokeWidth={2} />
+    <h3>Loading Dashboard...</h3>
     </div>
-       
-        </>
+    
+   
+    </div>
   )
+  }
 }
+
+

@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors:{
-        'avocado': "#e3f1be",
+        // 'avocado': "#e3f1be",
       }
     },
   },

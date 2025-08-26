@@ -24,7 +24,7 @@ export default function RUSSELL() {
 
     const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
     socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify({ 'type': 'subscribe', symbol }))
+        socket.send(JSON.stringify({ 'type': 'subscribe', symbol : symbol }))
     });
 
     socket.addEventListener('message', (event) => {

@@ -10,9 +10,9 @@ const apiKey = import.meta.env.VITE_APIKEY;
 export default function NASDAQ() {
     const [loading, setLoading] = useState(false);
     const [currentPrice, setCurrentPrice] = useState({});
-    const [symbol, setSymbol] = useState('NASDAQ')
+    const [symbol, setSymbol] = useState('^IXIC')
     const [series, setSeries] = useState([{
-        name: 'NASDAQ',
+        name: '^IXIC',
         data: []
     }]);
 
@@ -22,12 +22,12 @@ export default function NASDAQ() {
     const marketClose = new Date();
     marketClose.setHours(16, 0, 0, 0); // 4:00 PM today
 
-    const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
-    socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify({ 'type': 'subscribe', symbol }))
+    const socket1 = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
+    socket1.addEventListener('open', function (event) {
+        socket1.send(JSON.stringify({ 'type': 'subscribe', symbol: symbol }))
     });
 
-    socket.addEventListener('message', (event) => {
+    socket1.addEventListener('message', (event) => {
         const data = JSON.parse(event.data)
         console.log('socket is open')
         console.log('HERE', data.data[0])
@@ -42,8 +42,8 @@ export default function NASDAQ() {
             setSeries((prev) => [
                 {
                     ...prev[0],
-                    name: 'NASDAQ',
-                    data: [...prev[0].data.slice(-20), point]
+                    name: '^IXIC',
+                    data: [...prev[0].data.slice(-5), point]
                 }
             ])
         }
@@ -51,8 +51,8 @@ export default function NASDAQ() {
 
     // return () => {
     //     console.log(`Unsubscribing from ${symbol}`);
-    //     socket.send(JSON.stringify({ type: 'unsubscribe', symbol }));
-    //     socket.close();
+    //     socket1.send(JSON.stringify({ type: 'unsubscribe', symbol }));
+    //     socket1.close();
     //   };
     const options = {
         chart: {

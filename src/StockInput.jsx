@@ -11,7 +11,6 @@ export default function StockInput({onDataReceived}) {
   
   const handleForm = (e) => {
     console.log('before', stockIndex)
-    let input = e.target.value
     setStockIndex(e.target.value) 
     console.log('after', stockIndex)
   }
