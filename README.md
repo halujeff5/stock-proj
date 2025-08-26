@@ -4,7 +4,7 @@
 
 ### Additional features: 
 * real time chart for stock - using ApexCharts and websockets, if the x-axis has equal timestamps, data will not plot.
-* user input text field - this allows user to input aymbola to view different stocks
+* user input text field - this allows user to input stock symbols to view different stocks
 * loading state - loading states when the chart and table is loading
 
 ### This project was fun and it was my first time using technologies such as Tailwind CSS, ApexCharts, and websockets. Thanks!
