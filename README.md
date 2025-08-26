@@ -1,6 +1,6 @@
 # Stock Dashboard for ValueGlance
 
-### Welcome to my dashboard! Please have a look around! About 3.5 days was spent creating this dashboard. 📈 ApexCharts was used for the charts you see on dashboard and Finnhub.io for the data. Please view dashboard [here](https://68adde4982a5c836160e2aeb--cerulean-bavarois-100eab.netlify.app/). The table shows the latest 5 stock values.
+### Welcome to my dashboard! Please have a look around! About 3.5 days was spent creating this dashboard. 📈 ApexCharts was used for the charts you see on dashboard and Finnhub.io for the data. Please view dashboard [here](https://cerulean-bavarois-100eab.netlify.app/). The table shows the latest 5 stock values.
 
 ### Additional features: 
 * real time chart for stock - using ApexCharts and websockets, if the x-axis has equal timestamps, data will not plot.
