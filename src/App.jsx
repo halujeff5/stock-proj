@@ -50,6 +50,7 @@ export default function App() {
     });
     //receiving data from socket
     socket.onmessage = (event) => {
+      setLoading(false)
       const data = JSON.parse(event.data)
       console.log('HERE', data.data[0])
       if (data.type === 'trade' && data.data) {
@@ -72,7 +73,7 @@ export default function App() {
           }
         ]
         )
-        setLoading(false)
+       
 
       } else {setError('Symbol not found.')} 
 
