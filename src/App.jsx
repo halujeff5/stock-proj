@@ -6,7 +6,7 @@ import Chart from 'react-apexcharts';
 import { SpinningCircles } from 'react-loading-icons';
 import StockInput from './StockInput';
 import Table from './Table';
-import DJIA from './DJIA';
+
 
 const apiKey = import.meta.env.VITE_APIKEY;
 
@@ -45,7 +45,7 @@ export default function App() {
     // opening websocket
     const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiKey}`);
     socket.addEventListener('open', function (event) {
-   
+
       socket.send(JSON.stringify({ 'type': 'subscribe', symbol: symbol }))
     });
     //receiving data from socket
@@ -73,25 +73,25 @@ export default function App() {
           }
         ]
         )
-       
 
-      } else {setError('Symbol not found.')} 
+
+      } else { setError('Symbol not found.') }
 
     }
-    ;
+      ;
     //closing socket
     return () => {
-      
+
       console.log(`Unsubscribing from ${symbol}`);
-      socket.send(JSON.stringify({ type: 'unsubscribe', symbol : symbol }));
+      socket.send(JSON.stringify({ type: 'unsubscribe', symbol: symbol }));
       socket.close();
-      
+
     };
   }, [symbol]);
 
   console.log(series)
-  
- 
+
+
   //another graph requirement specifying the options of graph such as type, speed of updates, curve 
   const options = {
     chart: {
@@ -126,44 +126,43 @@ export default function App() {
     }
   }
 
+  if (loading == false) {
+    return (
+      <>
+        <div className="bg-[#e3f1be] w-full min-h-screen m-0 z-0">
 
 
-  if (loading==false){
-  return (
+          <h1 className="text-[#014d4e] text-4xl font-bold m-6">🚀 Welcome to Stock Dashboard</h1>
 
-    <div className="bg-[#e3f1be] w-full min-h-screen m-0 z-0">
+          <div className='w-full max-w-4xl bg-white rounded-2xl shadow-md mb-6'>
+            <h4 className='mt-4 text-[#014d4e]'>Stock: {symbol}</h4>
+            <Table name={symbol} series={series} />
+            <Chart options={options} series={series} type="line" width={1600} height={400} />
+            <div className='mt-4 text-[#014d4e]'>
+              <h4>Current Price: {currentPrice.y} </h4>
+            </div>
 
-   
-      <h1 className="text-[#014d4e] text-4xl font-bold m-6">🚀 Welcome to Stock Dashboard</h1>
-
-      <div className='w-full max-w-4xl bg-white rounded-2xl shadow-md mb-6'>
-      <h4 className='mt-4 text-[#014d4e]'>Stock: {symbol}</h4>
-       <Table name = {symbol} series = {series}/>  
-        <Chart options={options} series={series} type="line" width={1600} height={400} /> 
-        <div className='mt-4 text-[#014d4e]'>
-          <h4>Current Price: {currentPrice.y} </h4>
+          </div>
+          <div className="inline w-full max-w-md bg-white rounded-2xl shadow-md p-6">
+            <StockInput onDataReceived={handleChildData} />
+            <h4 className='mt-4 text-[#014d4e]'>{error}</h4>
+          </div>
         </div>
-      
-      </div>
-      <div className="inline w-full max-w-md bg-white rounded-2xl shadow-md p-6">
-        <StockInput onDataReceived={handleChildData} />
-        <h4 className='mt-4 text-[#014d4e]'>{error}</h4>
-      </div>
-      </div>
-  )
-    }
-  if (loading==true) {
-  return (
-    <div className="bg-[#e3f1be] w-full min-h-screen m-0">
+      </>
+    )
+  }
+  if (loading == true) {
+    return (
+      <div className="bg-[#e3f1be] w-full min-h-screen m-0">
 
-      <div className='h-screen flex items-center justify-center'>
-    <SpinningCircles height='100' width ='100' stroke='#98ff98' strokeOpacity={.75} speed={.75} strokeWidth={2} />
-    <h3>Loading Dashboard...</h3>
-    </div>
-    
-   
-    </div>
-  )
+        <div className='h-screen flex items-center justify-center'>
+          <SpinningCircles height='100' width='100' stroke='#98ff98' strokeOpacity={.75} speed={.75} strokeWidth={2} />
+          <h3>Loading Dashboard...</h3>
+        </div>
+
+
+      </div>
+    )
   }
 }
 
